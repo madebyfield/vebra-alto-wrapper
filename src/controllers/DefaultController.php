@@ -1,19 +1,22 @@
 <?php
 
 /**
- * Vebra Alto Wrapper plugin for Craft CMS 3.x
+ * Vebra Alto Wrapper plugin for Craft CMS 4.x
  *
- * Integration with the estate agency software vebraalto.com
+ * Integration with the estate agency softwarealtosoftware.co.uk
  *
  * @link      https://github.com/Jegard
  * @copyright Copyright (c) 2018 Luca Jegard
+ * 
+ * @link      https://github.com/MadeByField
+ * @copyright Copyright (c) 2023 Dave Speake / Made by Field Ltd
  */
 
-namespace jegardvebra\vebraaltowrapper\controllers;
+namespace madebyfield\vebraaltowrapper\controllers;
 
 
-use jegardvebra\vebraaltowrapper\VebraAltoWrapper;
-use jegardvebra\vebraaltowrapper\jobs\VebraAltoWrapperTask;
+use madebyfield\vebraaltowrapper\VebraAltoWrapper;
+use madebyfield\vebraaltowrapper\jobs\VebraAltoWrapperTask;
 
 use Craft;
 use craft\web\Controller;
@@ -37,6 +40,10 @@ use craft\web\Controller;
  * @author    Luca Jegard
  * @package   VebraAltoWrapper
  * @since     1.0.0
+ * 
+ * @author    Dave Speake / Made By Field Ltd
+ * @package   VebraAltoWrapper
+ * @since     1.1.0
  */
 class DefaultController extends Controller
 {
@@ -49,7 +56,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'update-branch', 'connect'];
+    protected array|int|bool $allowAnonymous = ['index', 'update-branch', 'connect'];
 
     // Public Methods
     // =========================================================================

@@ -1,8 +1,8 @@
 {
-    "name": "jegardvebra/vebra-alto-wrapper",
-    "description": "Integration with the estate agency software vebraalto.com",
+    "name": "madebyfield/vebra-alto-wrapper",
+    "description": "Integration with the estate agency software altosoftware.co.uk",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "keywords": [
         "craft",
         "cms",
@@ -11,22 +11,26 @@
         "vebra alto wrapper"
     ],
     "support": {
-        "docs": "https://github.com/https://github.com/Jegard/vebra-alto-wrapper/blob/master/README.md",
-        "issues": "https://github.com/https://github.com/Jegard/vebra-alto-wrapper/issues"
+        "docs": "https://github.com/madebyfield/vebra-alto-wrapper/blob/master/README.md",
+        "issues": "https://github.com/madebyfield/vebra-alto-wrapper/issues"
     },
     "license": "MIT",
     "authors": [
         {
             "name": "Luca Jegard",
             "homepage": "https://github.com/Jegard"
+        },
+        {
+            "name": "Made by Field Ltd",
+            "homepage": "https://github.com/MadeByField"
         }
     ],
     "require": {
-        "craftcms/cms": "^3.0.0-RC1"
+        "craftcms/cms": "^4.0.0-alpha"
     },
     "autoload": {
         "psr-4": {
-          "jegardvebra\\vebraaltowrapper\\": "src/"
+          "madebyfield\\vebraaltowrapper\\": "src/"
         }
     },
     "extra": {
@@ -34,10 +38,10 @@
         "handle": "vebra-alto-wrapper",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/https://github.com/Jegard/vebra-alto-wrapper/master/CHANGELOG.md",
+        "changelogUrl": "https://github.com/madebyfield/vebra-alto-wrapper/blob/master/CHANGELOG.md",
         "components": {
-            "vebraAltoWrapperService": "jegardvebra\\vebraaltowrapper\\services\\VebraAltoWrapperService"
+            "vebraAltoWrapperService": "madebyfield\\vebraaltowrapper\\services\\VebraAltoWrapperService"
         },
-        "class": "jegardvebra\\vebraaltowrapper\\VebraAltoWrapper"
+        "class": "madebyfield\\vebraaltowrapper\\VebraAltoWrapper"
     }
 }

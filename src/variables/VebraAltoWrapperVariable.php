@@ -4,10 +4,10 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace jegardvebra\vebraaltowrapper\variables;
+namespace madebyfield\vebraaltowrapper\variables;
 
 use Craft;
-use jegardvebra\vebraaltowrapper\VebraAltoWrapper;
+use madebyfield\vebraaltowrapper\VebraAltoWrapper;
 
 /**
  * Entry Count Variable
@@ -44,7 +44,7 @@ class VebraAltoWrapperVariable
             'measurements' => 'measurements',
             'paragraphs' => 'paragraphs',
 
-            'reference,software' => 'reference,software',
+            //'reference,software' => 'reference,software',
             'address,name' => 'address,name',
             'address,street' => 'address,street',
             'address,locality' => 'address,locality',

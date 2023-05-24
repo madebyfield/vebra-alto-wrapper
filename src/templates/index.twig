@@ -1,7 +1,7 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
 {#
 /**
- * Vebra Alto Wrapper plugin for Craft CMS 3.x
+ * Vebra Alto Wrapper plugin for Craft CMS
  *
  * Vebra Alto Wrapper index.twig
  *
@@ -10,17 +10,25 @@
  * @link      https://github.com/Jegard
  * @package   VebraAltoWrapper
  * @since     1.0.0
+ * 
+ * Updated and adapted for Craft 4.x
+ * 
+ * @author    Dave Speake
+ * @copyright Copyright (c) 2023 Made by Field Ltd
+ * @link      https://github.com/madebyfield
+ * @package   VebraAltoWrapper
+ * @since     1.1.0
  */
 #}
 
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{# {% do view.registerAssetBundle("jegardvebra\\vebraaltowrapper\\assetbundles\\vebraaltowrapper\\VebraAltoWrapperAsset") %} #}
-{% do view.registerAssetBundle("jegardvebra\\vebraaltowrapper\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+{# {% do view.registerAssetBundle("madebyfield\\vebraaltowrapper\\assetbundles\\vebraaltowrapper\\VebraAltoWrapperAsset") %} #}
+{% do view.registerAssetBundle("madebyfield\\vebraaltowrapper\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
 
 {# Link for the ? icon at the bottom of the page #}
-{% set docsUrl = "https://github.com/https://github.com/Jegard/vebra-alto-wrapper/blob/master/README.md" %}
+{% set docsUrl = "https://github.com/madebyfield/vebra-alto-wrapper/blob/master/README.md" %}
 
 {# The title of this CP section #}
 {% set title = "Vebra Alto Wrapper"|t('vebra-alto-wrapper') %}
@@ -29,7 +37,7 @@
 {% set pluginCpUrl = url('vebra-alto-wrapper') %}
 
 {# Get a URL to an image in our AssetBundle #}
-{% set iconUrl = view.getAssetManager().getPublishedUrl('@jegardvebra/vebraaltowrapper/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@madebyfield/vebraaltowrapper/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}
 
 {# Content that should appear in the page header#}
 {% set extraPageHeaderHtml %}
@@ -42,6 +50,7 @@
 
 {# The content of the CP Section#}
 {% set content %}
+{{ craft.app.request.getQueryParams() }}
     <form method="get" action="{{ siteUrl }}actions/vebra-alto-wrapper/default/set-section" class="field">
         <h2>Create new API link</h2>
         <div class="input flex-top">
@@ -120,7 +129,7 @@
                 }}
                 </td>
             </tr> #}
-            {% for field in section.getEntryTypes()[0].getFieldLayout().getFields() %}
+            {% for field in section.entryTypes()[0].getFieldLayout().customFields %}
             <tr>
                 <td>{{ field.handle }}</td>
                 <td>
@@ -151,7 +160,7 @@
     </div>
     {% endfor %}
     {# <a href="{{ siteUrl }}actions/vebra-alto-wrapper/default/update-all" class="submit btn" target="_blank">Update All</a> #}
-{% set css %}
+<style>
 .link-block {
     margin: 1em 0;
     padding: 1em;
@@ -185,7 +194,5 @@ table {
 td {
     padding: 5px 0;
 }
-
-{% endset %}
-{% includeCss css %}
+</style>
 {% endset %}

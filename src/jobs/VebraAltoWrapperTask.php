@@ -1,17 +1,20 @@
 <?php
 
 /**
- * Vebra Alto Wrapper plugin for Craft CMS 3.x
+ * Vebra Alto Wrapper plugin for Craft CMS 4.x
  *
- * Integration with the estate agency software vebraalto.com
+ * Integration with the estate agency softwarealtosoftware.co.uk
  *
  * @link      https://github.com/Jegard
  * @copyright Copyright (c) 2018 Luca Jegard
+ * 
+ * @link      https://github.com/MadeByField
+ * @copyright Copyright (c) 2023 Dave Speake / Made by Field Ltd
  */
 
-namespace jegardvebra\vebraaltowrapper\jobs;
+namespace madebyfield\vebraaltowrapper\jobs;
 
-use jegardvebra\vebraaltowrapper\VebraAltoWrapper;
+use madebyfield\vebraaltowrapper\VebraAltoWrapper;
 
 use Craft;
 use craft\elements\Entry;
@@ -28,7 +31,7 @@ use craft\elements\Category;
  *
  * You can use it like this:
  *
- * use jegardvebra\vebraaltowrapper\jobs\VebraAltoWrapperTask as VebraAltoWrapperTaskJob;
+ * use madebyfield\vebraaltowrapper\jobs\VebraAltoWrapperTask as VebraAltoWrapperTaskJob;
  *
  * $queue = Craft::$app->getQueue();
  * $jobId = $queue->push(new VebraAltoWrapperTaskJob([
@@ -48,6 +51,10 @@ use craft\elements\Category;
  * @author    Luca Jegard
  * @package   VebraAltoWrapper
  * @since     1.0.0
+ * 
+ * @author    Dave Speake / Made By Field Ltd
+ * @package   VebraAltoWrapper
+ * @since     1.1.0
  */
 class VebraAltoWrapperTask extends BaseJob
 {
@@ -72,7 +79,7 @@ class VebraAltoWrapperTask extends BaseJob
      *
      * More info: https://github.com/yiisoft/yii2-queue
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         $sectionId = $this->criteria['sectionId'];
         $branch = $this->criteria['branch'];
@@ -109,12 +116,12 @@ class VebraAltoWrapperTask extends BaseJob
             $allProps = array_merge($allProps, [$property]);
 
             $title = $property['address']['display'];
-            $ref = $property['reference']['software'];
+            //$ref = $property['reference']['software'];
             $this->vebraLog('Adding property ' . $title);
 
             $fields = array(
                 'title' => $title,
-                'reference' => $ref,
+                //'reference' => $ref,
             );
 
             foreach ($fieldMapping as $craftField => $vebraField) {
@@ -146,6 +153,7 @@ class VebraAltoWrapperTask extends BaseJob
                         }
                         break;
                     case 'pdf':
+                    case 'brochure':
                         $pdfs = VebraAltoWrapper::getInstance()->vebraAlto->getPdfs($property['files'], $ref);
                         $fields[$craftField] = $pdfs;
                         break;
@@ -221,7 +229,8 @@ class VebraAltoWrapperTask extends BaseJob
 
             $entry = Entry::find()
                 ->sectionId($sectionId)
-                ->reference($ref)
+                ->title($title)
+                //->ref($ref)
                 ->status(null)
                 ->all();
 
@@ -238,14 +247,15 @@ class VebraAltoWrapperTask extends BaseJob
         if (VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable !== '1') {
             $allEntries = Entry::find()
                 ->sectionId($sectionId)
-                //->title( $title )
+                ->title($title)
                 ->limit(null)
                 ->status(null)
                 ->all();
             foreach ($allEntries as $entry) {
+                Craft::$app->elements->saveElement($entry);
                 $isOnVebra = false;
                 foreach ($allProps as $property) {
-                    if ((string)$entry->reference == (string)$property['reference']['software']) {
+                    if ((string)$entry->title == (string)$property['address']['display']) {
                         $isOnVebra = true;
                     }
                 }
@@ -260,20 +270,20 @@ class VebraAltoWrapperTask extends BaseJob
         } else {
             $allEntries = Entry::find()
                 ->sectionId($sectionId)
-                //->title( $title )
+                ->title($title)
                 ->limit(null)
                 ->status(null)
                 ->all();
             foreach ($allEntries as $entry) {
                 $isOnVebra = false;
                 foreach ($allProps as $property) {
-                    if ((string)$entry->reference == (string)$property['reference']['software']) {
+                    if ((string)$entry->title == (string)$property['address']['display']) {
                         $isOnVebra = true;
                     }
                 }
                 $this->vebraLog('Web status ' . $title . ' ' . $entry->webStatus . ' type: ' . gettype($entry->webStatus));
-                if (!$isOnVebra && $entry->webStatus == '3') {
-                    $entry->webStatus = '2';
+                if (!$isOnVebra) {
+                    $entry->enabled = false;
                     Craft::$app->elements->saveElement($entry);
                 }
             }

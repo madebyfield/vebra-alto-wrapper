@@ -1,17 +1,20 @@
 <?php
 
 /**
- * Vebra Alto Wrapper plugin for Craft CMS 3.x
+ * Vebra Alto Wrapper plugin for Craft CMS 4.x
  *
- * Integration with the estate agency software vebraalto.com
+ * Integration with the estate agency softwarealtosoftware.co.uk
  *
  * @link      https://github.com/Jegard
  * @copyright Copyright (c) 2018 Luca Jegard
+ * 
+ * @link      https://github.com/MadeByField
+ * @copyright Copyright (c) 2023 Dave Speake / Made by Field Ltd
  */
 
-namespace jegardvebra\vebraaltowrapper\services;
+namespace madebyfield\vebraaltowrapper\services;
 
-use jegardvebra\vebraaltowrapper\VebraAltoWrapper;
+use madebyfield\vebraaltowrapper\VebraAltoWrapper;
 
 use Craft;
 use craft\base\Component;
@@ -21,10 +24,10 @@ use craft\helpers\FileHelper;
 use craft\helpers\Json;
 use craft\elements\Category;
 use craft\helpers\StringHelper;
-use jegardvebra\vebraaltowrapper\models\LinkModel;
-use jegardvebra\vebraaltowrapper\records\VebraAltoWrapperRecord;
+use madebyfield\vebraaltowrapper\models\LinkModel;
+use madebyfield\vebraaltowrapper\records\VebraAltoWrapperRecord;
 use craft\elements\db\CategoryQuery;
-use craft\web\twig\variables\Sections;
+use craft\services\Sections;
 
 /**
  * VebraAltoWrapperService Service
@@ -38,6 +41,10 @@ use craft\web\twig\variables\Sections;
  * @author    Luca Jegard
  * @package   VebraAltoWrapper
  * @since     1.0.0
+ * 
+ * @author    Dave Speake / Made By Field Ltd
+ * @package   VebraAltoWrapper
+ * @since     1.1.0
  */
 class VebraAltoWrapperService extends Component
 {
@@ -142,7 +149,7 @@ class VebraAltoWrapperService extends Component
     {
         //DataFeedID is set in the function __construct where it is retrieved from the
         //Settings section of this plugin within Craft CMS
-        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v10/branch";
+        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
         //Start curl session
         $ch = curl_init($url);
         //Define Basic HTTP Authentication method
@@ -217,7 +224,7 @@ class VebraAltoWrapperService extends Component
             return false;
         }
         if (strlen($url) == 0) {
-            $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v10/branch";
+            $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
         }
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -332,31 +339,26 @@ class VebraAltoWrapperService extends Component
 
             $name = $image['name'];
 
-
-            if (gettype($name) == 'array') {
-                $name = md5($url);
+            if (!empty($title)) {
+                $name = StringHelper::toKebabCase($title . ' ' . $name) . '.' . end(explode('.', $url));
             } else {
-                $name = md5($url) . $name;
+                if (gettype($name) == 'array') {
+                    $name = md5($url);
+                } else {
+                    $name = md5($url) . $name;
+                }
             }
 
             if (gettype($name) == 'string') {
                 $name = strtolower($name);
+                $assets = Asset::Find()
+                    ->filename($name)
+                    ->all();
 
-                if (strpos(strtolower($url), 'jpg') !== false || strpos(strtolower($url), 'png')) {
-
-                    //$name = StringHelper::toKebabCase( $name );
-                    $name = explode('.', $name)[0];
-                    $name = StringHelper::toKebabCase($name) . '.jpg';
-
-                    $assets = Asset::Find()
-                        ->filename($name)
-                        ->all();
-                    // d( $assets );
-                    if (count($assets) == 0) {
-                        $ids[] = (string)$this->createAssetFromUrl($name, $url);
-                    } else {
-                        $ids[] = (string)$assets[0]->id;
-                    }
+                if (count($assets) == 0) {
+                    $ids[] = (string)$this->createAssetFromUrl($name, $url);
+                } else {
+                    $ids[] = (string)$assets[0]->id;
                 }
             }
         }
@@ -365,10 +367,17 @@ class VebraAltoWrapperService extends Component
     }
     public function createAssetFromUrl($sFilename, $url)
     {
+        // Check HTTP status code for image. 
+        $handle = curl_init($url);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
+        $response = curl_exec($handle);
+        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        curl_close($handle);
+        if ($httpCode !== 200) return;
+        
         $img = file_get_contents($url);
         $path = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $sFilename;
         FileHelper::writeToFile($path, $img);
-
 
         $asset = new Asset();
         $asset->tempFilePath = $path;
@@ -416,9 +425,9 @@ class VebraAltoWrapperService extends Component
     }
     public function saveNewEntry($sectionId, $fields)
     {
+
         $entry = new Entry();
         $entry->sectionId = (int)$sectionId;
-
 
         $sections = new Sections();
         $section = $sections->getSectionById($sectionId);

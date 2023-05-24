@@ -1,16 +1,19 @@
 <?php
 /**
- * Vebra Alto Wrapper plugin for Craft CMS 3.x
+ * Vebra Alto Wrapper plugin for Craft CMS 4.x
  *
- * Integration with the estate agency software vebraalto.com
+ * Integration with the estate agency softwarealtosoftware.co.uk
  *
  * @link      https://github.com/Jegard
  * @copyright Copyright (c) 2018 Luca Jegard
+ * 
+ * @link      https://github.com/MadeByField
+ * @copyright Copyright (c) 2023 Dave Speake / Made by Field Ltd
  */
 
-namespace jegardvebra\vebraaltowrapper\models;
+namespace madebyfield\vebraaltowrapper\models;
 
-use jegardvebra\vebraaltowrapper\VebraAltoWrapper;
+use madebyfield\vebraaltowrapper\VebraAltoWrapper;
 
 use Craft;
 use craft\base\Model;
