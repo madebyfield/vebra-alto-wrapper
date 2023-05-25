@@ -50,7 +50,6 @@
 
 {# The content of the CP Section#}
 {% set content %}
-{{ craft.app.request.getQueryParams() }}
     <form method="get" action="{{ siteUrl }}actions/vebra-alto-wrapper/default/set-section" class="field">
         <h2>Create new API link</h2>
         <div class="input flex-top">
@@ -58,26 +57,21 @@
             <div class="field" id="sections-field">
                 <div class="heading">
                     <label id="sections-label" for="sections">Select Section</label>
-                <div class="instructions">
-                    <p>Select Section</p>
-                </div>
                 </div>
                 <div class="input ltr">
-                <div class="select">
-                <select id="sections" name="sectionId">
-                {# {% for sectionName in craft.sections.getAllSections() %} #}
-                {% for sectionName in craft.app.sections.allSections %}
-                <option value="{{ sectionName.id }}">{{ sectionName.handle }}</option>
-                {% endfor %}
-                </select>
-                </div>
-
+                    <div class="select">
+                        <select id="sections" name="sectionId">
+                        {# {% for sectionName in craft.sections.getAllSections() %} #}
+                        {% for sectionName in craft.app.sections.allSections %}
+                        <option value="{{ sectionName.id }}">{{ sectionName.handle }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
                 </div>
             </div>
 
             {{ forms.selectField({
                 label: 'Select Branch',
-                instructions: 'Select Branch',
                 id: 'branch',
                 name: 'branch',
                 options: craft.vebraAltoWrapper.getAllBranches()
@@ -85,7 +79,7 @@
                 })
             }}
             <div class="field">
-                <input type="submit" class="btn submit" value="create">
+                <input type="submit" class="btn submit" value="Create">
             </div>
         </div>
     </form>
@@ -173,12 +167,13 @@
 .flex-top {
    display: flex;
    align-items: baseline;
+   gap: 2em;
 }
 .meta {
     color: #8f98a3;
 }
 .flex-top .field {
-    margin: 1em;
+    margin: 0em;
 }
 .flex-top .field:last-of-type {
     align-self: self-end;

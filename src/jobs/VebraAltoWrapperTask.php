@@ -3,7 +3,7 @@
 /**
  * Vebra Alto Wrapper plugin for Craft CMS 4.x
  *
- * Integration with the estate agency softwarealtosoftware.co.uk
+ * Integration with the estate agency altosoftware.co.uk
  *
  * @link      https://github.com/Jegard
  * @copyright Copyright (c) 2018 Luca Jegard
@@ -21,6 +21,7 @@ use craft\elements\Entry;
 use craft\queue\BaseJob;
 use craft\helpers\FileHelper;
 use craft\elements\Category;
+use craft\helpers\StringHelper;
 
 /**
  * VebraAltoWrapperTask job
@@ -66,7 +67,6 @@ class VebraAltoWrapperTask extends BaseJob
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
     public $criteria;
 
     // Public Methods
@@ -113,19 +113,23 @@ class VebraAltoWrapperTask extends BaseJob
             $property = VebraAltoWrapper::getInstance()->vebraAlto->connect($property->url)['response'];
             $property = json_decode(json_encode($property), TRUE);
 
+            $title = $property['address']['display'];
+
+            if (empty($title)) continue;
+
             $allProps = array_merge($allProps, [$property]);
 
-            $title = $property['address']['display'];
-            //$ref = $property['reference']['software'];
+            $ref = (int)$property['@attributes']['id'];
+            $slug = $title ? StringHelper::toKebabCase($title) . '-' . $ref : $ref;
             $this->vebraLog('Adding property ' . $title);
 
             $fields = array(
                 'title' => $title,
-                //'reference' => $ref,
+                'reference' => $ref,
+                'slug' => $slug,
             );
 
             foreach ($fieldMapping as $craftField => $vebraField) {
-
                 switch ($vebraField) {
                     case 'parish':
                         $this->vebraLog('Creating parish categories');
@@ -152,16 +156,11 @@ class VebraAltoWrapperTask extends BaseJob
                             $fields[$craftField] = [$cat[0]->id];
                         }
                         break;
-                    case 'pdf':
-                    case 'brochure':
-                        $pdfs = VebraAltoWrapper::getInstance()->vebraAlto->getPdfs($property['files'], $ref);
-                        $fields[$craftField] = $pdfs;
-                        break;
                     case 'measurements':
                         $measure = [];
 
                         if (VebraAltoWrapper::getInstance()->vebraAlto->findKey($property['paragraphs'], 'paragraph')) {
-                            $paragraphs = $property['paragraphs']['paragraph'];
+                            $paragraphs = $property['paragraphs'];
 
                             foreach ($paragraphs as $paragraph) {
                                 if (gettype($paragraph) == 'array') {
@@ -181,41 +180,52 @@ class VebraAltoWrapperTask extends BaseJob
 
                         break;
                     case 'paragraphs':
-                        $measure = [];
+                        $html = '';
 
                         if (VebraAltoWrapper::getInstance()->vebraAlto->findKey($property['paragraphs'], 'paragraph')) {
-                            $paragraphs = $property['paragraphs']['paragraph'];
+                            $paragraphs = $property['paragraphs'];
 
                             foreach ($paragraphs as $paragraph) {
 
                                 if (gettype($paragraph) == 'array') {
-
-
                                     if (VebraAltoWrapper::getInstance()->vebraAlto->findKey($paragraph, 'metric') && VebraAltoWrapper::getInstance()->vebraAlto->findKey($paragraph, 'name') && VebraAltoWrapper::getInstance()->vebraAlto->findKey($paragraph, 'text')) {
                                         $name = $paragraph['name'];
                                         $text = $paragraph['text'];
 
+                                        /*
                                         if (gettype($name) == 'array') {
-                                            $name = 'quote';
+                                            $html .= '<h2>' . $name . '</h2>';
                                         }
+                                        */
 
                                         if (gettype($text) != 'array') {
-                                            $measure[] = $name . ' | ' . $paragraph['text'];
+                                            $html .= '<p>' . str_replace('<br/><br/>', '</p><p>', str_replace('<br /><br />', '</p><p>', str_replace('<br><br>', '</p><p>', $paragraph['text']))) . '</p>';
                                         }
                                     }
                                 }
                             }
-                            $fields[$craftField] = join('@', $measure);
+                            $fields[$craftField] = $html;
                         }
 
                         break;
                     case 'images':
-                        $images = VebraAltoWrapper::getInstance()->vebraAlto->getImages($property['files'], $title);
+                        $images = VebraAltoWrapper::getInstance()->vebraAlto->getImages($property['files'], $title . '-' . $ref);
                         $fields[$craftField] = $images;
+                        break;
+                    case 'floorplans':
+                        $floorplans = VebraAltoWrapper::getInstance()->vebraAlto->getFloorplans($property['files'], $title . '-' . $ref);
+                        $fields[$craftField] = $floorplans;
+                        break;
+                    case 'energy_ratings':
+                        $energyRatings = VebraAltoWrapper::getInstance()->vebraAlto->getEnergyRatings($property['files'], $title . '-' . $ref);
+                        $fields[$craftField] = $energyRatings;
+                        break;
+                    case 'brochures':
+                        $brochures = VebraAltoWrapper::getInstance()->vebraAlto->getBrochures($property['files'], $title . '-' . $ref);
+                        $fields[$craftField] = $brochures;
                         break;
                     default:
                         if (strlen($vebraField) > 0) {
-                            $value = VebraAltoWrapper::getInstance()->vebraAlto->getArrayValueByCsv($vebraField, $property);
                             if (strpos($vebraField, ',') !== false) {
                                 $value = VebraAltoWrapper::getInstance()->vebraAlto->getArrayValueByCsv($vebraField, $property);
                             } else {
@@ -229,11 +239,11 @@ class VebraAltoWrapperTask extends BaseJob
 
             $entry = Entry::find()
                 ->sectionId($sectionId)
-                ->title($title)
-                //->ref($ref)
+                //->title($title)
+                ->reference($ref)
                 ->status(null)
                 ->all();
-
+            
             if (empty($entry)) {
                 // $this->vebraLog('Attempting to save entry ' . json_encode($fields));
                 VebraAltoWrapper::getInstance()->vebraAlto->saveNewEntry($sectionId, $fields);
@@ -242,51 +252,31 @@ class VebraAltoWrapperTask extends BaseJob
                 VebraAltoWrapper::getInstance()->vebraAlto->updateEntry($entry[0], $fields);
             }
         }
-        // file_put_contents(__DIR__ . '/props.json', json_encode($allProps));
+        
+        $allEntries = Entry::find()
+        ->sectionId($sectionId)
+        ->limit(null)
+        ->status(null)
+        ->all();
 
-        if (VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable !== '1') {
-            $allEntries = Entry::find()
-                ->sectionId($sectionId)
-                ->title($title)
-                ->limit(null)
-                ->status(null)
-                ->all();
-            foreach ($allEntries as $entry) {
-                Craft::$app->elements->saveElement($entry);
-                $isOnVebra = false;
-                foreach ($allProps as $property) {
-                    if ((string)$entry->title == (string)$property['address']['display']) {
-                        $isOnVebra = true;
-                    }
-                }
-                if (!$isOnVebra) {
-                    $entry->enabled = false;
-                    Craft::$app->elements->saveElement($entry);
-                } else {
-                    $entry->enabled = true;
-                    Craft::$app->elements->saveElement($entry);
+        foreach ($allEntries as $entry) {
+            $isOnVebra = false;
+            
+            foreach ($allProps as $property) {
+                //if ((string)$entry->title == (string)$property['address']['display']) {
+                if ((string)$entry->reference == (string)$property['@attributes']['id']) {
+                    $isOnVebra = true;
                 }
             }
-        } else {
-            $allEntries = Entry::find()
-                ->sectionId($sectionId)
-                ->title($title)
-                ->limit(null)
-                ->status(null)
-                ->all();
-            foreach ($allEntries as $entry) {
-                $isOnVebra = false;
-                foreach ($allProps as $property) {
-                    if ((string)$entry->title == (string)$property['address']['display']) {
-                        $isOnVebra = true;
-                    }
-                }
-                $this->vebraLog('Web status ' . $title . ' ' . $entry->webStatus . ' type: ' . gettype($entry->webStatus));
-                if (!$isOnVebra) {
-                    $entry->enabled = false;
-                    Craft::$app->elements->saveElement($entry);
-                }
+
+            if (!$isOnVebra) {
+                if ((int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) $entry->enabled = false;
+                $entry->webStatus = 2;
+            } else {
+                $entry->enabled = true;
             }
+
+            Craft::$app->elements->saveElement($entry);
         }
     }
 

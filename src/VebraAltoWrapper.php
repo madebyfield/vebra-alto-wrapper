@@ -3,7 +3,7 @@
 /**
  * Vebra Alto Wrapper plugin for Craft CMS 4.x
  *
- * Integration with the estate agency softwarealtosoftware.co.uk
+ * Integration with the estate agency altosoftware.co.uk
  *
  * @link      https://github.com/Jegard
  * @copyright Copyright (c) 2018 Luca Jegard
@@ -71,7 +71,7 @@ class VebraAltoWrapper extends Plugin
      *
      * @var string
      */
-    public string $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.1.0';
 
     // Public Methods
     // =========================================================================

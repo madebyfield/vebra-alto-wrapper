@@ -3,7 +3,7 @@
 /**
  * Vebra Alto Wrapper plugin for Craft CMS 4.x
  *
- * Integration with the estate agency softwarealtosoftware.co.uk
+ * Integration with the estate agency altosoftware.co.uk
  *
  * @link      https://github.com/Jegard
  * @copyright Copyright (c) 2018 Luca Jegard
@@ -149,7 +149,7 @@ class VebraAltoWrapperService extends Component
     {
         //DataFeedID is set in the function __construct where it is retrieved from the
         //Settings section of this plugin within Craft CMS
-        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
+        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v10/branch";
         //Start curl session
         $ch = curl_init($url);
         //Define Basic HTTP Authentication method
@@ -168,7 +168,7 @@ class VebraAltoWrapperService extends Component
         //Close the curl session
         curl_close($ch);
         $headers = $this->get_headers_from_curl_response($response)[0];
-
+        
         if (array_key_exists('Token', $headers)) {
             file_put_contents(__DIR__ . '/token.txt', base64_encode($headers['Token']));
             return $headers['Token'];
@@ -301,20 +301,28 @@ class VebraAltoWrapperService extends Component
         }
         return false;
     }
-
-    public function getPdfs($pdfs, $ref = '')
+    
+    public function getFiles($files, $title = '', $type = -1)
     {
         $ids = [];
 
-        foreach ($pdfs['file'] as $pdf) {
-            $url = $pdf['url'];
-            $name = $pdf['name'];
+        foreach ($files['file'] as $file) {
+            if ((int)$file['@attributes']['type'] == -1 || (int)$file['@attributes']['type'] == $type) {
+                $url = $file['url'];
+                $name = $file['name'];
 
-            if (gettype($url) == 'string') {
-                if (strpos($url, 'pdf') !== false || strpos($url, 'PDF') !== false) {
-                    $name = explode('.', $name)[0];
-                    $name = StringHelper::toKebabCase($name . '-' . $ref) . '.pdf';
+                if (!empty($title)) {
+                    $name = StringHelper::toKebabCase($title . '-' . $name) . '.' . end(explode('.', $url));
+                } else {
+                    if (gettype($name) == 'array') {
+                        $name = md5($url);
+                    } else {
+                        $name = md5($url) . $name;
+                    }
+                }
 
+                if (gettype($name) == 'string') {
+                    $name = strtolower($name);
                     $assets = Asset::Find()
                         ->filename($name)
                         ->all();
@@ -330,41 +338,19 @@ class VebraAltoWrapperService extends Component
 
         return $ids;
     }
-    public function getImages($images, $title = '')
-    {
-        $ids = [];
-
-        foreach ($images['file'] as $image) {
-            $url = $image['url'];
-
-            $name = $image['name'];
-
-            if (!empty($title)) {
-                $name = StringHelper::toKebabCase($title . ' ' . $name) . '.' . end(explode('.', $url));
-            } else {
-                if (gettype($name) == 'array') {
-                    $name = md5($url);
-                } else {
-                    $name = md5($url) . $name;
-                }
-            }
-
-            if (gettype($name) == 'string') {
-                $name = strtolower($name);
-                $assets = Asset::Find()
-                    ->filename($name)
-                    ->all();
-
-                if (count($assets) == 0) {
-                    $ids[] = (string)$this->createAssetFromUrl($name, $url);
-                } else {
-                    $ids[] = (string)$assets[0]->id;
-                }
-            }
-        }
-
-        return $ids;
+    public function getImages($files, $title = '') {
+        return $this->getFiles($files, $title, 0);
     }
+    public function getFloorplans($files, $title = '') {
+        return $this->getFiles($files, $title, 2);
+    }
+    public function getBrochures($files, $title = '') {
+        return $this->getFiles($files, $title, 7);
+    }
+    public function getEnergyRatings($files, $title = '') {
+        return $this->getFiles($files, $title, 9);
+    }
+
     public function createAssetFromUrl($sFilename, $url)
     {
         // Check HTTP status code for image. 
@@ -415,6 +401,7 @@ class VebraAltoWrapperService extends Component
             $entry->slug = $fields['slug'];
             unset($fields['slug']);
         }
+
         $entry->setFieldValues($fields);
 
         if (Craft::$app->elements->saveElement($entry)) {
@@ -444,7 +431,6 @@ class VebraAltoWrapperService extends Component
             $entry->slug = $fields['slug'];
             unset($fields['slug']);
         }
-
 
         $entry->setFieldValues($fields);
 

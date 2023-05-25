@@ -23,11 +23,11 @@ To install the plugin, follow these instructions.
 ## Vebra Alto Wrapper Overview
 
 This plugin allows you to import properties from Vebra Alto as entries in Craft CMS 4.
-read api details here: http://webservices.vebra.com/export/xsd/v12/Client_Feed_API_v12_UserGuide.pdf
+read API details here: http://webservices.vebra.com/export/xsd/v12/Client_Feed_API_v12_UserGuide.pdf
 
 ## Configuring Vebra Alto Wrapper
 
-First fill in your vebra api details into the plugin settings
+First fill in your Vebra Alto API details into the plugin settings
 
 ![GitHub Logo](/resources/img/step1.jpg)
 
@@ -38,6 +38,8 @@ Then select which location you would like to import (this plugin can handle mult
 ![GitHub Logo](/resources/img/step2.jpg)
 
 Then choose which fields you want the desired data to go. Please not 'images' and 'brochure' must be an assets field and propertyType must be a categories field containing a 'For Let' and a 'For Sale' category.
+
+The target section must have an unmapped field with the slug `reference` and a mapped field with the slug `webStatus` (mapped to `web_status`).
 
 Once all links have been saved you can then periodically update properties via a cron job
 
@@ -50,4 +52,5 @@ Some things to do, and ideas for potential features:
 * Release it
 
 Originally written by [Luca Jegard](https://github.com/Jegard)
-Updated and adpated for Craft CMS 4 by [Dave Speake](https://github.com/MadeByField)
+
+Updated and adapted for Craft CMS 4 by [Dave Speake](https://github.com/MadeByField)
