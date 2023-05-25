@@ -415,6 +415,7 @@ class VebraAltoWrapperService extends Component
 
         $entry = new Entry();
         $entry->sectionId = (int)$sectionId;
+        $entry->enabled = (int)VebraAltoWrapper::$plugin->getSettings()->defaultStatus;
 
         $sections = new Sections();
         $section = $sections->getSectionById($sectionId);
