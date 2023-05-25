@@ -254,9 +254,7 @@ class VebraAltoWrapperTask extends BaseJob
                 // $this->vebraLog('Attempting to update entry ' . json_encode($fields));
                 VebraAltoWrapper::getInstance()->vebraAlto->updateEntry($entry[0], $fields);
             }
-            return;
         }
-        return;
         
         $allEntries = Entry::find()
         ->sectionId($sectionId)
