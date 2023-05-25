@@ -120,7 +120,7 @@ class VebraAltoWrapperTask extends BaseJob
 
             $allProps = array_merge($allProps, [$property]);
 
-            $ref = (int)$property['@attributes']['id'];
+            $ref = (string)$property['@attributes']['id'];
             $slug = $title ? StringHelper::toKebabCase($title) . '-' . $ref : $ref;
             $this->vebraLog('Adding property ' . $title);
 
@@ -130,7 +130,7 @@ class VebraAltoWrapperTask extends BaseJob
                 'slug' => $slug,
                 'postDate' => DateTimeHelper::toDateTime($property['uploaded']),
             );
-            
+
             foreach ($fieldMapping as $craftField => $vebraField) {
                 switch ($vebraField) {
                     case 'parish':
@@ -242,7 +242,8 @@ class VebraAltoWrapperTask extends BaseJob
             $entry = Entry::find()
                 ->sectionId($sectionId)
                 //->title($title)
-                ->reference($ref)
+                //->reference($ref)
+                ->reference(['or', (int)$ref, (string)$ref])
                 ->status(null)
                 ->all();
             
@@ -253,7 +254,9 @@ class VebraAltoWrapperTask extends BaseJob
                 // $this->vebraLog('Attempting to update entry ' . json_encode($fields));
                 VebraAltoWrapper::getInstance()->vebraAlto->updateEntry($entry[0], $fields);
             }
+            return;
         }
+        return;
         
         $allEntries = Entry::find()
         ->sectionId($sectionId)

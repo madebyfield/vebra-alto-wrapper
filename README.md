@@ -41,6 +41,8 @@ Then choose which fields you want the desired data to go. Please not 'images' an
 
 The target section must have an unmapped field with the slug `reference` and a mapped field with the slug `webStatus` (mapped to `web_status`).
 
+Recommend [Read-Only Field plugin](https://plugins.craftcms.com/read-only?craft4) for the `reference` field.
+
 Once all links have been saved you can then periodically update properties via a cron job
 
 ![GitHub Logo](/resources/img/step3.jpg)
