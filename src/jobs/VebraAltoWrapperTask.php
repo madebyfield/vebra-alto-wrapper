@@ -22,6 +22,7 @@ use craft\queue\BaseJob;
 use craft\helpers\FileHelper;
 use craft\elements\Category;
 use craft\helpers\StringHelper;
+use craft\helpers\DateTimeHelper;
 
 /**
  * VebraAltoWrapperTask job
@@ -127,8 +128,9 @@ class VebraAltoWrapperTask extends BaseJob
                 'title' => $title,
                 'reference' => $ref,
                 'slug' => $slug,
+                'postDate' => DateTimeHelper::toDateTime($property['uploaded']),
             );
-
+            
             foreach ($fieldMapping as $craftField => $vebraField) {
                 switch ($vebraField) {
                     case 'parish':

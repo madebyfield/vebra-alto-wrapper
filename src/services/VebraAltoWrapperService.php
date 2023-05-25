@@ -402,6 +402,11 @@ class VebraAltoWrapperService extends Component
             unset($fields['slug']);
         }
 
+        if (isset($fields['postDate'])) {
+            $entry->postDate = $fields['postDate'];
+            unset($fields['postDate']);
+        }
+
         $entry->setFieldValues($fields);
 
         if (Craft::$app->elements->saveElement($entry)) {
@@ -431,6 +436,11 @@ class VebraAltoWrapperService extends Component
         if (isset($fields['slug'])) {
             $entry->slug = $fields['slug'];
             unset($fields['slug']);
+        }
+
+        if (isset($fields['postDate'])) {
+            $entry->postDate = $fields['postDate'];
+            unset($fields['postDate']);
         }
 
         $entry->setFieldValues($fields);

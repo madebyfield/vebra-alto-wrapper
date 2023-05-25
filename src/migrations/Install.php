@@ -137,11 +137,9 @@ class Install extends Migration
         $this->createIndex(
             $this->db->getIndexName(
                 '{{%vebraaltowrapper_vebraaltowrapperrecord}}',
-                'some_field',
                 true
             ),
             '{{%vebraaltowrapper_vebraaltowrapperrecord}}',
-            'some_field',
             true
         );
         // Additional commands depending on the db driver
