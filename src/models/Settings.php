@@ -51,6 +51,7 @@ class Settings extends Model
     public $vebraPassword = '';
     public $shouldAutoDisable = '';
     public $defaultStatus = '';
+    public $volume = '';
     //public $sectionId = '';
 
     // Public Methods
@@ -71,7 +72,8 @@ class Settings extends Model
         return [
             [['dataFeedID' , 'vebraUsername', 'vebraPassword'], 'required'],
             ['shouldAutoDisable', 'boolean'],
-            ['defaultStatus', 'boolean']
+            ['defaultStatus', 'boolean'],
+            ['volume', 'integer']
         ];
     }
 }

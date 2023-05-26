@@ -63,3 +63,12 @@
     on: settings.defaultStatus
     })
 }}
+
+{{ forms.selectField({
+    label: 'Asset volume',
+    id: 'volume',
+    name: 'volume',
+    options: volumes,
+    value: settings.volume
+    })
+}}

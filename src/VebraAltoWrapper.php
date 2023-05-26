@@ -181,10 +181,28 @@ class VebraAltoWrapper extends Plugin
      */
     protected function settingsHtml(): string
     {
+        $volumes = [
+            /*
+            [
+                'label' => 'Please select', 
+                'value' => ''
+            ]
+            */
+        ];
+
+        foreach (Craft::$app->volumes->getAllVolumes() as $volume)
+        {
+            $volumes[] = [
+                'label' => $volume['name'], 
+                'value' => $volume['id']
+            ];
+        }
+
         return Craft::$app->view->renderTemplate(
             'vebra-alto-wrapper/settings',
             [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
+                'volumes' => $volumes
             ]
         );
     }
