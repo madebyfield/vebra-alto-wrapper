@@ -171,10 +171,13 @@ class VebraAltoWrapperService extends Component
         
         $this->vebraLog(print_r($response, true));
         $this->vebraLog(print_r($headers, true));
+        $this->vebraLog(array_key_exists('Token', $headers));
         
         if (array_key_exists('Token', $headers)) {
             file_put_contents(__DIR__ . '/token.txt', base64_encode($headers['Token']));
-            return $headers['Token'];
+            $this->vebraLog(file_put_contents(__DIR__ . '/token.txt', base64_encode($headers['Token'])));
+            $this->vebraLog(base64_encode($headers['Token']));
+            return base64_encode($headers['Token']);
         } else {
             return false;
         }
@@ -229,7 +232,9 @@ class VebraAltoWrapperService extends Component
         if (strlen($url) == 0) {
             $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
         }
+        
         $this->vebraLog($url);
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Basic ' . $token));
@@ -237,8 +242,9 @@ class VebraAltoWrapperService extends Component
         $response = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
-        $this->vebraLog($response);
-        $this->vebraLog($info);
+
+        $this->vebraLog(print_r($response, true));
+        $this->vebraLog(print_r($info, true));
 
         if($info["http_code"] == 200) {
             $response = (array)simplexml_load_string($response);
@@ -315,16 +321,19 @@ class VebraAltoWrapperService extends Component
         foreach ($files['file'] as $file) {
             if ((int)$file['@attributes']['type'] == -1 || (int)$file['@attributes']['type'] == $type) {
                 $url = $file['url'];
-                $name = $file['name'];
+                $tmp = explode('.', $url);
+                $ext = end($tmp);
+
+                if (!empty($name)) {
+                    $name = $file['name'];
+                } else {
+                    $name = md5($url);
+                }
 
                 if (!empty($title)) {
-                    $name = StringHelper::toKebabCase($title . '-' . $name) . '.' . end(explode('.', $url));
+                    $name = StringHelper::toKebabCase($title . '-' . $name) . '.' . $ext;
                 } else {
-                    if (gettype($name) == 'array') {
-                        $name = md5($url);
-                    } else {
-                        $name = md5($url) . $name;
-                    }
+                    $name .= '.' . $ext;
                 }
 
                 if (gettype($name) == 'string') {
