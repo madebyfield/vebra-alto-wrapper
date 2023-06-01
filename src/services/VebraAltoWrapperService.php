@@ -149,7 +149,7 @@ class VebraAltoWrapperService extends Component
     {
         //DataFeedID is set in the function __construct where it is retrieved from the
         //Settings section of this plugin within Craft CMS
-        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v10/branch";
+        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
         //Start curl session
         $ch = curl_init($url);
         //Define Basic HTTP Authentication method
@@ -168,6 +168,9 @@ class VebraAltoWrapperService extends Component
         //Close the curl session
         curl_close($ch);
         $headers = $this->get_headers_from_curl_response($response)[0];
+        
+        $this->vebraLog(print_r($response, true));
+        $this->vebraLog(print_r($headers, true));
         
         if (array_key_exists('Token', $headers)) {
             file_put_contents(__DIR__ . '/token.txt', base64_encode($headers['Token']));
@@ -226,6 +229,7 @@ class VebraAltoWrapperService extends Component
         if (strlen($url) == 0) {
             $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
         }
+        $this->vebraLog($url);
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Basic ' . $token));
@@ -233,6 +237,8 @@ class VebraAltoWrapperService extends Component
         $response = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
+        $this->vebraLog($response);
+        $this->vebraLog($info);
 
         if($info["http_code"] == 200) {
             $response = (array)simplexml_load_string($response);

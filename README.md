@@ -51,6 +51,9 @@ Once all links have been saved you can then periodically update properties via a
 
 Some things to do, and ideas for potential features:
 
+* Plugin migrations fail on first run
+* Die gracefully on errors, i.e. 401
+* Store token in a global store or database so it is retained between deployments.
 * Release it
 
 Originally written by [Luca Jegard](https://github.com/Jegard)

@@ -11,3 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 1.1.0 - 2023-05-24
 ### Added
 - Upgraded to Craft CMS 4
+
+## 1.1.1 - 2023-06-01
+### Added
+- Various fixes and enhancements
