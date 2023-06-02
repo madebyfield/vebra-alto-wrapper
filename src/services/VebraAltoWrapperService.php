@@ -324,7 +324,7 @@ class VebraAltoWrapperService extends Component
                 $tmp = explode('.', $url);
                 $ext = end($tmp);
 
-                if (!empty($name) && gettype($name) == 'string') {
+                if (!empty($file['name']) && gettype($file['name']) == 'string') {
                     $tmp = explode('.', $file['name']);
                     $name = $tmp[0];
                 } else {
