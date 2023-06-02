@@ -191,17 +191,18 @@ class VebraAltoWrapperTask extends BaseJob
 
                                 if (gettype($paragraph) == 'array') {
                                     if (VebraAltoWrapper::getInstance()->vebraAlto->findKey($paragraph, 'metric') && VebraAltoWrapper::getInstance()->vebraAlto->findKey($paragraph, 'name') && VebraAltoWrapper::getInstance()->vebraAlto->findKey($paragraph, 'text')) {
-                                        $name = $paragraph['name'];
-                                        $text = $paragraph['text'];
-
                                         /*
-                                        if (gettype($name) == 'array') {
-                                            $html .= '<h2>' . $name . '</h2>';
+                                        if (array_key_exists('name', $paragraph) && !empty($paragraph['name'])) {
+                                            if (gettype($paragraph['name']) != 'array') {
+                                                $html .= '<h2>' . $paragraph['name'] . '</h2>';
+                                            }
                                         }
                                         */
 
-                                        if (gettype($text) != 'array') {
-                                            $html .= '<p>' . str_replace('<br/><br/>', '</p><p>', str_replace('<br /><br />', '</p><p>', str_replace('<br><br>', '</p><p>', $paragraph['text']))) . '</p>';
+                                        if (array_key_exists('text', $paragraph) && !empty($paragraph['text'])) {
+                                            if (gettype($paragraph['text']) != 'array') {
+                                                $html .= '<p>' . str_replace('<br/><br/>', '</p><p>', str_replace('<br /><br />', '</p><p>', str_replace('<br><br>', '</p><p>', $paragraph['text']))) . '</p>';
+                                            }
                                         }
                                     }
                                 }
