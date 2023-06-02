@@ -82,6 +82,9 @@ class VebraAltoWrapperTask extends BaseJob
      */
     public function execute($queue): void
     {
+        @set_time_limit(3600);
+        @ini_set('max_execution_time', 3600);
+        
         $sectionId = $this->criteria['sectionId'];
         $branch = $this->criteria['branch'];
         $token = VebraAltoWrapper::getInstance()->vebraAlto->getToken();
