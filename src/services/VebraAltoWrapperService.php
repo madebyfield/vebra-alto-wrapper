@@ -388,8 +388,14 @@ class VebraAltoWrapperService extends Component
         $asset->avoidFilenameConflicts = true;
         $asset->setScenario(\craft\elements\Asset::SCENARIO_CREATE);
 
-        $folderId = (int)VebraAltoWrapper::$plugin->getSettings()->volume ?: 1;
-        $folder = $this->getFolder($folderId);
+        $volumeId = (int)VebraAltoWrapper::$plugin->getSettings()->volume ?: 1;
+        $volume = $this->getVolume($volumeId);
+        $asset->volumeId = $volumeId;
+        $asset->newFolderId = $volumeId;
+
+
+        $volumeId = (int)VebraAltoWrapper::$plugin->getSettings()->volume ?: 1;
+        $folder = $this->getFolder($volumeId);
         $asset->newFolderId = $folder->id;
         $asset->volumeId = $folder->volumeId;
 
@@ -402,7 +408,7 @@ class VebraAltoWrapperService extends Component
     public function getFolder($id)
     {
         if ($this->_folder === null) {
-            $this->_folder = Craft::$app->getAssets()->findFolder(['id' => $id]);
+            $this->_folder = Craft::$app->assets->getRootFolderByVolumeId($id);
         }
         return $this->_folder;
     }
