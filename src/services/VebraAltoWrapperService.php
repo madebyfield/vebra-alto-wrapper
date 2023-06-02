@@ -388,7 +388,7 @@ class VebraAltoWrapperService extends Component
         $asset->avoidFilenameConflicts = true;
         $asset->setScenario(\craft\elements\Asset::SCENARIO_CREATE);
 
-        $folderId = (int)VebraAltoWrapper::$plugin->getSettings()->volume || 1;
+        $folderId = (int)VebraAltoWrapper::$plugin->getSettings()->volume ?: 1;
         $folder = $this->getFolder($folderId);
         $asset->newFolderId = $folder->id;
         $asset->volumeId = $folder->volumeId;
