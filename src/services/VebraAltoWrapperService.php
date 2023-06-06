@@ -74,7 +74,7 @@ class VebraAltoWrapperService extends Component
         //Intention: get all of the settings from the settings section of Vebra within the Plugin section of Craft
         $this->url = "http://webservices.vebra.com/export/";
         //$this->tokenFolder = __DIR__;
-        $this->tokenFolder = Craft::$app->getPath()->getRuntimePath() . 'vebra-alto-wrapper';
+        $this->tokenFolder = Craft::$app->getPath()->getRuntimePath() . '/vebra-alto-wrapper';
 
         $this->dataFeedID = $dataFeedID;
         if (is_null($dataFeedID)) {
