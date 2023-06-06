@@ -9,9 +9,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Initial release
 
 ## 1.1.0 - 2023-05-24
-### Added
+### Changed
 - Upgraded to Craft CMS 4
 
 ## 1.1.1 - 2023-06-01
-### Added
+### Fixed
 - Various fixes and enhancements
+
+## 1.1.2 - 2023-06-06
+### Changed
+- Move token files to runtime directory
