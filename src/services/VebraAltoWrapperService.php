@@ -67,11 +67,14 @@ class VebraAltoWrapperService extends Component
     private $vebraUsername;
     private $vebraPassword;
     private $_folder;
+    private $tokenFolder;
 
     public function __construct($url = null, $dataFeedID = null, $vebraUsername = null, $vebraPassword = null)
     {
         //Intention: get all of the settings from the settings section of Vebra within the Plugin section of Craft
         $this->url = "http://webservices.vebra.com/export/";
+        //$this->tokenFolder = __DIR__;
+        $this->tokenFolder = Craft::$app->getPath()->getRuntimePath() . 'vebra-alto-wrapper';
 
         $this->dataFeedID = $dataFeedID;
         if (is_null($dataFeedID)) {
@@ -174,8 +177,8 @@ class VebraAltoWrapperService extends Component
         $this->vebraLog(array_key_exists('Token', $headers));
         
         if (array_key_exists('Token', $headers)) {
-            file_put_contents(__DIR__ . '/token.txt', base64_encode($headers['Token']));
-            $this->vebraLog(file_put_contents(__DIR__ . '/token.txt', base64_encode($headers['Token'])));
+            file_put_contents($this->tokenFolder . '/token.txt', base64_encode($headers['Token']));
+            $this->vebraLog(file_put_contents($this->tokenFolder . '/token.txt', base64_encode($headers['Token'])));
             $this->vebraLog(base64_encode($headers['Token']));
             return base64_encode($headers['Token']);
         } else {
@@ -207,16 +210,16 @@ class VebraAltoWrapperService extends Component
     }
     public function getToken()
     {
-        $file = __DIR__ . "/token.txt";
+        $file = $this->tokenFolder . "/token.txt";
         $tokenAge = 3600;
         if (!file_exists($file)) {
             $token = $this->getNewToken();
         } else {
             if (time() - filemtime($file) > $tokenAge) {
-                file_put_contents(__DIR__ . '/tokenAge.txt', 'Token older than ' . $tokenAge . ' seconds old. The tokens age is ' . (time() - filemtime($file)) . ' seconds old');
+                file_put_contents($this->tokenFolder . '/tokenAge.txt', 'Token older than ' . $tokenAge . ' seconds old. The tokens age is ' . (time() - filemtime($file)) . ' seconds old');
                 $token = $this->getNewToken();
             } else {
-                file_put_contents(__DIR__ . '/tokenAge.txt', 'Token NOT older than ' . $tokenAge . ' seconds old. The tokens age is ' . (time() - filemtime($file)) . ' seconds old');
+                file_put_contents($this->tokenFolder . '/tokenAge.txt', 'Token NOT older than ' . $tokenAge . ' seconds old. The tokens age is ' . (time() - filemtime($file)) . ' seconds old');
                 $token = trim(file_get_contents($file));
             }
         }
