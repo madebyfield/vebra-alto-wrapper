@@ -73,7 +73,6 @@ class VebraAltoWrapperService extends Component
     {
         //Intention: get all of the settings from the settings section of Vebra within the Plugin section of Craft
         $this->url = "http://webservices.vebra.com/export/";
-        //$this->tokenFolder = __DIR__;
         $this->tokenFolder = Craft::$app->getPath()->getRuntimePath() . '/vebra-alto-wrapper/';
 
         $this->dataFeedID = $dataFeedID;
@@ -387,12 +386,6 @@ class VebraAltoWrapperService extends Component
 
         $asset->avoidFilenameConflicts = true;
         $asset->setScenario(\craft\elements\Asset::SCENARIO_CREATE);
-
-        $volumeId = (int)VebraAltoWrapper::$plugin->getSettings()->volume ?: 1;
-        $volume = $this->getVolume($volumeId);
-        $asset->volumeId = $volumeId;
-        $asset->newFolderId = $volumeId;
-
 
         $volumeId = (int)VebraAltoWrapper::$plugin->getSettings()->volume ?: 1;
         $folder = $this->getFolder($volumeId);
