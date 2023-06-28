@@ -71,7 +71,7 @@ class VebraAltoWrapper extends Plugin
      *
      * @var string
      */
-    public string $schemaVersion = '1.1.2';
+    public string $schemaVersion = '1.1.3';
 
     // Public Methods
     // =========================================================================

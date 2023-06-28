@@ -19,3 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 1.1.2 - 2023-06-06
 ### Changed
 - Move token files to runtime directory
+
+## 1.1.3 - 2023-06-28
+### Fixed
+- Fixed token directory

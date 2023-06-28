@@ -171,15 +171,11 @@ class VebraAltoWrapperService extends Component
         //Close the curl session
         curl_close($ch);
         $headers = $this->get_headers_from_curl_response($response)[0];
-        
-        $this->vebraLog(print_r($response, true));
-        $this->vebraLog(print_r($headers, true));
-        $this->vebraLog(array_key_exists('Token', $headers));
-        
+
         if (array_key_exists('Token', $headers)) {
             file_put_contents($this->tokenFolder . 'token.txt', base64_encode($headers['Token']));
-            $this->vebraLog(file_put_contents($this->tokenFolder . 'token.txt', base64_encode($headers['Token'])));
-            $this->vebraLog(base64_encode($headers['Token']));
+            $this->vebraLog('Token: ' . $headers['Token']);
+            $this->vebraLog('Token (Base64): ' . base64_encode($headers['Token']));
             return base64_encode($headers['Token']);
         } else {
             @unlink($this->tokenFolder . 'token.txt');
@@ -236,8 +232,6 @@ class VebraAltoWrapperService extends Component
         if (strlen($url) == 0) {
             $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
         }
-        
-        $this->vebraLog($url);
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -246,9 +240,6 @@ class VebraAltoWrapperService extends Component
         $response = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
-
-        $this->vebraLog(print_r($response, true));
-        $this->vebraLog(print_r($info, true));
 
         if($info["http_code"] == 200) {
             $response = (array)simplexml_load_string($response);
