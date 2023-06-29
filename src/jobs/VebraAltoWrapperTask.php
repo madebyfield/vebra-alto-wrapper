@@ -123,7 +123,7 @@ class VebraAltoWrapperTask extends BaseJob
                 ],
                 'url' => (string)$property->url,
             ]), 5);
-            $allProps = array_merge($allProps, [$property]);
+            $allProps << (string)$property['@attributes']['id'];
         }
 
         $queue->ttr(3600)->push(new StatusTask([
