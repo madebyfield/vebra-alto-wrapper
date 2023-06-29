@@ -134,7 +134,7 @@ class DefaultController extends Controller
 
         VebraAltoWrapper::getInstance()->vebraAlto->vebraLog('Starting new branch update');
         $queue = Craft::$app->getQueue();
-        $queue->push(new VebraAltoWrapperTask([
+        $queue->ttr(3600)->push(new VebraAltoWrapperTask([
             'criteria' => [
                 'sectionId' => $sectionId,
                 'branch' => $branch,
