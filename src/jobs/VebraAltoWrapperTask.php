@@ -118,8 +118,8 @@ class VebraAltoWrapperTask extends BaseJob
             $this->setProgress($queue, $propertyKey / count($propertyList));
             $queue->ttr(3600)->push(new PropertyTask([
                 'criteria' => [
-                    'sectionId' => $sectionId,
-                    'branch' => $branch,
+                    'sectionId' => $this->criteria['sectionId'],
+                    'branch' => $this->criteria['branch'],
                 ],
                 'url' => $property->url,
             ]), 5);
@@ -127,39 +127,11 @@ class VebraAltoWrapperTask extends BaseJob
 
         $queue->ttr(3600)->push(new StatusTask([
             'criteria' => [
-                'sectionId' => $sectionId,
-                'branch' => $branch,
+                'sectionId' => $this->criteria['sectionId'],
+                'branch' => $this->criteria['branch'],
             ],
             'allProps' => $allProps,
         ]), 15);
-
-        return;
-        
-        $allEntries = Entry::find()
-        ->sectionId($sectionId)
-        ->limit(null)
-        ->status(null)
-        ->all();
-
-        foreach ($allEntries as $entry) {
-            $isOnVebra = false;
-            
-            foreach ($allProps as $property) {
-                //if ((string)$entry->title == (string)$property['address']['display']) {
-                if ((string)$entry->reference == (string)$property['@attributes']['id']) {
-                    $isOnVebra = true;
-                }
-            }
-
-            if (!$isOnVebra) {
-                if ((int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) $entry->enabled = false;
-                //$entry->webStatus = 2;
-            } else {
-                $entry->enabled = true;
-            }
-
-            Craft::$app->elements->saveElement($entry);
-        }
     }
 
     public function vebraLog($message)
