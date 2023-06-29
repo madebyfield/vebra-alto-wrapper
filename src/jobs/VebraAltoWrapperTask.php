@@ -15,6 +15,8 @@
 namespace madebyfield\vebraaltowrapper\jobs;
 
 use madebyfield\vebraaltowrapper\VebraAltoWrapper;
+use madebyfield\vebraaltowrapper\jobs\PropertyTask;
+use madebyfield\vebraaltowrapper\jobs\StatusTask;
 
 use Craft;
 use craft\elements\Entry;
