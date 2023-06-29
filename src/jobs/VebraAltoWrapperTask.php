@@ -121,7 +121,6 @@ class VebraAltoWrapperTask extends BaseJob
                     'sectionId' => $sectionId,
                     'branch' => $branch,
                 ],
-                'title' => $property['address']['display'],
                 'url' => $property->url,
             ]), 5);
         }
