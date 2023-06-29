@@ -139,7 +139,7 @@ class DefaultController extends Controller
                 'sectionId' => $sectionId,
                 'branch' => $branch,
             ],
-        ]), 10);
+        ]), 3);
 
         return $this->redirect('admin/vebra-alto-wrapper');
     }

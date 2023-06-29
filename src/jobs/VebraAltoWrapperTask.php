@@ -122,7 +122,7 @@ class VebraAltoWrapperTask extends BaseJob
                     'branch' => $this->criteria['branch'],
                 ],
                 'url' => (string)$property->url,
-            ]), 5);
+            ]), 4);
             array_push($allProps, (int)$property['@attributes']['id']);
         }
 
@@ -132,7 +132,7 @@ class VebraAltoWrapperTask extends BaseJob
                 'branch' => $this->criteria['branch'],
             ],
             'allProps' => $allProps,
-        ]), 15);
+        ]), 5);
     }
 
     public function vebraLog($message)
