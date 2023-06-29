@@ -58,7 +58,7 @@ use craft\helpers\DateTimeHelper;
  * @package   VebraAltoWrapper
  * @since     1.1.0
  */
-class PropertTask extends BaseJob
+class PropertyTask extends BaseJob
 {
     // Public Properties
     // =========================================================================
