@@ -20,6 +20,7 @@ use madebyfield\vebraaltowrapper\jobs\VebraAltoWrapperTask;
 
 use Craft;
 use craft\web\Controller;
+use craft\helpers\Queue;
 
 /**
  * Default Controller
@@ -133,8 +134,7 @@ class DefaultController extends Controller
         $branch = Craft::$app->getRequest()->getRequiredParam('branch');
 
         VebraAltoWrapper::getInstance()->vebraAlto->vebraLog('Starting new branch update');
-        $queue = Craft::$app->getQueue();
-        $queue->ttr(3600)->push(new VebraAltoWrapperTask([
+        \craft\helpers\Queue::push(new VebraAltoWrapperTask([
             'criteria' => [
                 'sectionId' => $sectionId,
                 'branch' => $branch,

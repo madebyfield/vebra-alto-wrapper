@@ -22,6 +22,7 @@ use Craft;
 use craft\elements\Entry;
 use craft\queue\BaseJob;
 use craft\helpers\FileHelper;
+use craft\helpers\Queue;
 use craft\elements\Category;
 use craft\helpers\StringHelper;
 use craft\helpers\DateTimeHelper;
@@ -112,11 +113,10 @@ class VebraAltoWrapperTask extends BaseJob
 
         $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($branch->url . '/property')['response']['property'];
 
-        $queue = Craft::$app->getQueue();
         $allProps = [];
         foreach ($propertyList as $propertyKey => $property) {
             $this->setProgress($queue, $propertyKey / count($propertyList));
-            $queue->ttr(3600)->push(new PropertyTask([
+            \craft\helpers\Queue::push(new PropertyTask([
                 'criteria' => [
                     'sectionId' => $this->criteria['sectionId'],
                     'branch' => $this->criteria['branch'],
@@ -126,7 +126,7 @@ class VebraAltoWrapperTask extends BaseJob
             array_push($allProps, (int)$property['@attributes']['id']);
         }
 
-        $queue->ttr(3600)->push(new StatusTask([
+        \craft\helpers\Queue::push(new StatusTask([
             'criteria' => [
                 'sectionId' => $this->criteria['sectionId'],
                 'branch' => $this->criteria['branch'],
