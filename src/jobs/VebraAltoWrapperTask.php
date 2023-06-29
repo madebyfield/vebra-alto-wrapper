@@ -278,7 +278,7 @@ class VebraAltoWrapperTask extends BaseJob
 
             if (!$isOnVebra) {
                 if ((int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) $entry->enabled = false;
-                $entry->webStatus = 2;
+                //$entry->webStatus = 2;
             } else {
                 $entry->enabled = true;
             }
