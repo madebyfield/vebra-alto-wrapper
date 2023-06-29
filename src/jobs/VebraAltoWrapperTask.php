@@ -132,6 +132,7 @@ class VebraAltoWrapperTask extends BaseJob
                 'reference' => $ref,
                 'slug' => $slug,
                 'postDate' => DateTimeHelper::toDateTime($property['uploaded']),
+                'webStatus' => (int)$property['web_status'],
             );
 
             foreach ($fieldMapping as $craftField => $vebraField) {
