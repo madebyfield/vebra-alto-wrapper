@@ -25,7 +25,7 @@ use craft\helpers\StringHelper;
 use craft\helpers\DateTimeHelper;
 
 /**
- * VebraAltoWrapperTask job
+ * StatusTask job
  *
  * Jobs are run in separate process via a Queue of pending jobs. This allows
  * you to spin lengthy processing off into a separate PHP process that does not
@@ -33,10 +33,10 @@ use craft\helpers\DateTimeHelper;
  *
  * You can use it like this:
  *
- * use madebyfield\vebraaltowrapper\jobs\VebraAltoWrapperTask as VebraAltoWrapperTaskJob;
+ * use madebyfield\vebraaltowrapper\jobs\StatusTask as StatusTaskJob;
  *
  * $queue = Craft::$app->getQueue();
- * $jobId = $queue->push(new VebraAltoWrapperTaskJob([
+ * $jobId = $queue->push(new StatusTaskJob([
  *     'description' => Craft::t('vebra-alto-wrapper', 'This overrides the default description'),
  *     'someAttribute' => 'someValue',
  * ]));
@@ -58,7 +58,7 @@ use craft\helpers\DateTimeHelper;
  * @package   VebraAltoWrapper
  * @since     1.1.0
  */
-class VebraAltoWrapperTask extends BaseJob
+class StatusTask extends BaseJob
 {
     // Public Properties
     // =========================================================================
@@ -69,6 +69,7 @@ class VebraAltoWrapperTask extends BaseJob
      * @var string
      */
     public $criteria;
+    public $allProps;
 
     // Public Methods
     // =========================================================================
@@ -93,46 +94,6 @@ class VebraAltoWrapperTask extends BaseJob
         $linkModel = VebraAltoWrapper::getInstance()->vebraAlto->getLinkModel($sectionId);
         $fieldMapping = json_decode($linkModel->fieldMapping);
         $branches = VebraAltoWrapper::getInstance()->vebraAlto->getBranch();
-
-        if (strpos($branchName, '-noname') !== false) {
-            foreach ($branches as $_branch) {
-                if ((int)$_branch->branchid == explode('-', $branchName)[0]) {
-                    $branch = $_branch;
-                }
-            }
-        } else {
-            foreach ($branches as $_branch) {
-                if ($_branch->name == $branchName) {
-                    $branch = $_branch;
-                }
-            }
-        }
-
-        $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($branch->url . '/property')['response']['property'];
-
-        $queue = Craft::$app->getQueue();
-        $allProps = [];
-        foreach ($propertyList as $propertyKey => $property) {
-            $this->setProgress($queue, $propertyKey / count($propertyList));
-            $queue->ttr(3600)->push(new PropertyTask([
-                'criteria' => [
-                    'sectionId' => $sectionId,
-                    'branch' => $branch,
-                ],
-                'title' => $property['address']['display'],
-                'url' => $property->url,
-            ]), 5);
-        }
-
-        $queue->ttr(3600)->push(new StatusTask([
-            'criteria' => [
-                'sectionId' => $sectionId,
-                'branch' => $branch,
-            ],
-            'allProps' => $allProps,
-        ]), 15);
-
-        return;
         
         $allEntries = Entry::find()
         ->sectionId($sectionId)
@@ -143,7 +104,7 @@ class VebraAltoWrapperTask extends BaseJob
         foreach ($allEntries as $entry) {
             $isOnVebra = false;
             
-            foreach ($allProps as $property) {
+            foreach ($this->allProps as $property) {
                 //if ((string)$entry->title == (string)$property['address']['display']) {
                 if ((string)$entry->reference == (string)$property['@attributes']['id']) {
                     $isOnVebra = true;
@@ -178,6 +139,6 @@ class VebraAltoWrapperTask extends BaseJob
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('vebra-alto-wrapper', 'Syncing all properties');
+        return Craft::t('vebra-alto-wrapper', 'Updating property statuses');
     }
 }
