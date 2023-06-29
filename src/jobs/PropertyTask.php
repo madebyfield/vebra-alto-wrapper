@@ -117,8 +117,6 @@ class PropertyTask extends BaseJob
 
         if (empty($title)) return;
         $this->title = $title;
-        
-        $allProps = array_merge($allProps, [$property]);
 
         $ref = (string)$property['@attributes']['id'];
         $slug = $title ? StringHelper::toKebabCase($title) . '-' . $ref : $ref;
