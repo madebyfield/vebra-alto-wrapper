@@ -23,3 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 1.1.3 - 2023-06-28
 ### Fixed
 - Fixed token directory
+
+## 1.1.4 - 2023-06-29
+### Changed
+- Perform property updates in individual jobs
