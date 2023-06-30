@@ -86,31 +86,20 @@ class StatusTask extends BaseJob
         @set_time_limit(3600);
         @ini_set('max_execution_time', 3600);
         
-        $sectionId = $this->criteria['sectionId'];
-        $branch = $this->criteria['branch'];
-        $token = VebraAltoWrapper::getInstance()->vebraAlto->getToken();
-
-        $branchName = $branch;
-        $linkModel = VebraAltoWrapper::getInstance()->vebraAlto->getLinkModel($sectionId);
-        $fieldMapping = json_decode($linkModel->fieldMapping);
-        $branches = VebraAltoWrapper::getInstance()->vebraAlto->getBranch();
-        
         $allEntries = Entry::find()
-        ->sectionId($sectionId)
+        ->sectionId($this->criteria['sectionId'])
         ->limit(null)
         ->status(null)
         ->all();
-
+        
         foreach ($allEntries as $index => $entry) {
             $this->setProgress($queue, $index / count($allEntries));
+            
             if (!in_array((int)$entry->reference, $this->allProps)) {
                 if ((int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) $entry->enabled = false;
                 //$entry->webStatus = 2;
-            } else {
-                $entry->enabled = true;
+                Craft::$app->elements->saveElement($entry);
             }
-
-            Craft::$app->elements->saveElement($entry);
         }
     }
 

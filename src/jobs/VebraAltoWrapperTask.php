@@ -126,13 +126,15 @@ class VebraAltoWrapperTask extends BaseJob
             array_push($allProps, (int)$property->prop_id);
         }
 
-        \craft\helpers\Queue::push(new StatusTask([
-            'criteria' => [
-                'sectionId' => $this->criteria['sectionId'],
-                'branch' => $this->criteria['branch'],
-            ],
-            'allProps' => $allProps,
-        ]), 5);
+        if ((int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) {
+            \craft\helpers\Queue::push(new StatusTask([
+                'criteria' => [
+                    'sectionId' => $this->criteria['sectionId'],
+                    'branch' => $this->criteria['branch'],
+                ],
+                'allProps' => $allProps,
+            ]), 5);
+        }
     }
 
     public function vebraLog($message)
