@@ -123,7 +123,7 @@ class VebraAltoWrapperTask extends BaseJob
                 ],
                 'url' => (string)$property->url,
             ]), 4);
-            array_push($allProps, (int)$property['@attributes']['id']);
+            array_push($allProps, (int)$property->prop_id);
         }
 
         \craft\helpers\Queue::push(new StatusTask([

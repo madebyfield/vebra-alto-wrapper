@@ -102,7 +102,7 @@ class StatusTask extends BaseJob
         ->all();
 
         foreach ($allEntries as $entry) {
-            if (!in_array((int)$entry->reference, $allProps)) {
+            if (!in_array((int)$entry->reference, $this->allProps)) {
                 if ((int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) $entry->enabled = false;
                 //$entry->webStatus = 2;
             } else {
