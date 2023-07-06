@@ -120,7 +120,7 @@ class PropertyTask extends BaseJob
 
         $ref = (string)$property['@attributes']['id'];
         $slug = $title ? StringHelper::toKebabCase($title) . '-' . $ref : $ref;
-        $this->vebraLog('Adding property ' . $title);
+        $this->vebraLog('Processing property ' . $title);
 
         $fields = array(
             'title' => $title,
