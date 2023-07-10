@@ -112,7 +112,8 @@ class VebraAltoWrapperTask extends BaseJob
         }
 
         $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($branch->url . '/property')['response']['property'];
-
+        $propertyList = array_reverse($propertyList);
+        
         $allProps = [];
         foreach ($propertyList as $propertyKey => $property) {
             $this->setProgress($queue, $propertyKey / count($propertyList));
