@@ -221,7 +221,7 @@ class VebraAltoWrapperService extends Component
         }
         return $token;
     }
-    public function connect($url = "")
+    public function connect($url = "", $prepend = false)
     {
         $token = $this->getToken();
 
@@ -230,6 +230,8 @@ class VebraAltoWrapperService extends Component
         }
         if (strlen($url) == 0) {
             $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
+        } elseif ($prepend) {
+            $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12" . $url;
         }
 
         $ch = curl_init($url);
