@@ -120,10 +120,10 @@ class VebraAltoWrapperTask extends BaseJob
             $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($url)['response']['property'];
         }
         
+        if (gettype($propertyList) !== 'array') $propertyList = [$propertyList];
         $this->vebraLog('Total properties in update: ' . print_r(count($propertyList), true));
         if (count($propertyList) < 1) return;
-        
-        //usort($propertyList, fn($a, $b) => (int)$a->prop_id < (int)$b->prop_id);
+        usort($propertyList, fn($a, $b) => (int)$a->prop_id < (int)$b->prop_id);
         
         $allProps = [];
         foreach ($propertyList as $propertyKey => $property) {
