@@ -126,7 +126,7 @@ class PropertyTask extends BaseJob
             'title' => $title,
             'reference' => $ref,
             'slug' => $slug,
-            'postDate' => DateTimeHelper::toDateTime($property['uploaded']),
+            'postDate' => DateTimeHelper::toDateTime($property['uploaded'], true),
             'webStatus' => (int)$property['web_status'],
         );
 
