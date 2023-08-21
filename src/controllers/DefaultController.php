@@ -57,7 +57,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected array|int|bool $allowAnonymous = ['index', 'update-branch', 'connect'];
+    protected array|int|bool $allowAnonymous = ['index', 'update-branch', 'full-update-branch', 'connect'];
 
     // Public Methods
     // =========================================================================
