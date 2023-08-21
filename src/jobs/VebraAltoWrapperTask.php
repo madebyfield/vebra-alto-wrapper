@@ -112,12 +112,12 @@ class VebraAltoWrapperTask extends BaseJob
         }
 
         $file = Craft::$app->getPath()->getRuntimePath() . '/vebra-alto-wrapper/token.txt';
-        if (file_exists($file)) {
-            $url = '/property/' . date('Y/m/d/00/00/00', filemtime($file));
-            $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($url, true)['response']['property'];
-        } else {
+        if (!file_exists($file) || $this->criteria['full']) {
             $url = $branch->url . '/property';
             $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($url)['response']['property'];
+        } else {
+            $url = '/property/' . date('Y/m/d/00/00/00', filemtime($file));
+            $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($url, true)['response']['property'];
         }
         
         if (gettype($propertyList) !== 'array') $propertyList = [$propertyList];

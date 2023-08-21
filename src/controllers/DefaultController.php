@@ -143,4 +143,22 @@ class DefaultController extends Controller
 
         return $this->redirect('admin/vebra-alto-wrapper');
     }
+
+    public function actionFullUpdateBranch()
+    {
+        VebraAltoWrapper::getInstance()->vebraAlto->getToken();
+        $sectionId = Craft::$app->getRequest()->getRequiredParam('sectionId');
+        $branch = Craft::$app->getRequest()->getRequiredParam('branch');
+
+        VebraAltoWrapper::getInstance()->vebraAlto->vebraLog('Starting full branch update');
+        \craft\helpers\Queue::push(new VebraAltoWrapperTask([
+            'criteria' => [
+                'sectionId' => $sectionId,
+                'branch' => $branch,
+                'full' => true,
+            ],
+        ]), 3);
+
+        return $this->redirect('admin/vebra-alto-wrapper');
+    }
 }
