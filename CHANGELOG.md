@@ -31,3 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 1.1.5 - 2023-07-11
 ### Added
 - Only fetch updated properties
+
+## 1.1.6 - 2023-08-21
+### Added
+- Add full update action
