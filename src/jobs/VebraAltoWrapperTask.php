@@ -138,7 +138,7 @@ class VebraAltoWrapperTask extends BaseJob
             array_push($allProps, (int)$property->prop_id);
         }
 
-        if ((int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) {
+        if ($this->criteria['full'] && (int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) {
             \craft\helpers\Queue::push(new StatusTask([
                 'criteria' => [
                     'sectionId' => $this->criteria['sectionId'],
