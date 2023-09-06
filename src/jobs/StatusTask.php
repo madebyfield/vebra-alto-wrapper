@@ -86,12 +86,14 @@ class StatusTask extends BaseJob
         @set_time_limit(3600);
         @ini_set('max_execution_time', 3600);
         
+        if (empty($this->allProps)) return;
+        
         $allEntries = Entry::find()
         ->sectionId($this->criteria['sectionId'])
         ->limit(null)
         ->status(null)
         ->all();
-        
+
         foreach ($allEntries as $index => $entry) {
             $this->setProgress($queue, $index / count($allEntries));
             
