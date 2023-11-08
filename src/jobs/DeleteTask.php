@@ -69,7 +69,7 @@ class DeleteTask extends BaseJob
      * @var string
      */
     public $criteria;
-    public $propid;
+    public $prop_id;
 
     // Public Methods
     // =========================================================================
@@ -86,13 +86,13 @@ class DeleteTask extends BaseJob
         @set_time_limit(3600);
         @ini_set('max_execution_time', 3600);
         
-        if (empty($this->propid)) return;
+        if (empty($this->prop_id)) return;
         
-        $this->vebraLog('Disabling deleted property ' . $this->propid);
+        $this->vebraLog('Disabling deleted property ' . $this->prop_id);
         
         $entries = Entry::find()
             ->sectionId($sectionId)
-            ->reference(['or', (int)$this->propid, (string)$this->propid])
+            ->reference(['or', (int)$this->prop_id, (string)$this->prop_id])
             ->status(null)
             ->all();
         
@@ -123,6 +123,6 @@ class DeleteTask extends BaseJob
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('vebra-alto-wrapper', 'Disabling deleted property ' . $this->propid);
+        return Craft::t('vebra-alto-wrapper', 'Disabling deleted property ' . $this->prop_id);
     }
 }

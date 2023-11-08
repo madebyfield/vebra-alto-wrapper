@@ -134,7 +134,7 @@ class VebraAltoWrapperTask extends BaseJob
                         'sectionId' => $this->criteria['sectionId'],
                         'branch' => $this->criteria['branch'],
                     ],
-                    'propid' => (int)$property->propid
+                    'prop_id' => (int)$property->prop_id
                 ]), 4);
             } else {
                 \craft\helpers\Queue::push(new PropertyTask([
