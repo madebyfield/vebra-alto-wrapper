@@ -128,14 +128,20 @@ class VebraAltoWrapperTask extends BaseJob
         $allProps = [];
         foreach ($propertyList as $propertyKey => $property) {
             $this->setProgress($queue, $propertyKey / count($propertyList));
-            \craft\helpers\Queue::push(new PropertyTask([
-                'criteria' => [
-                    'sectionId' => $this->criteria['sectionId'],
-                    'branch' => $this->criteria['branch'],
-                ],
-                'url' => (string)$property->url,
-            ]), 4);
-            array_push($allProps, (int)$property->prop_id);
+            if ((string) $property->action === 'deleted') {
+                \craft\helpers\Queue::push(new DeleteTask([
+                    'propid' => (string)$property->propid
+                ]), 4);
+            } else {
+                \craft\helpers\Queue::push(new PropertyTask([
+                    'criteria' => [
+                        'sectionId' => $this->criteria['sectionId'],
+                        'branch' => $this->criteria['branch'],
+                    ],
+                    'url' => (string)$property->url
+                ]), 4);
+                array_push($allProps, (int)$property->prop_id);
+            }
         }
 
         if ($this->criteria['full'] && (int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) {
