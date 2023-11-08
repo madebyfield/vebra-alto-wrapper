@@ -68,8 +68,8 @@ class DeleteTask extends BaseJob
      *
      * @var string
      */
+    public $criteria;
     public $propid;
-    public $allProps;
 
     // Public Methods
     // =========================================================================
@@ -87,6 +87,8 @@ class DeleteTask extends BaseJob
         @ini_set('max_execution_time', 3600);
         
         if (empty($this->propid)) return;
+        
+        $this->vebraLog('Disabling deleted property ' . $this->propid);
         
         $entries = Entry::find()
             ->sectionId($sectionId)

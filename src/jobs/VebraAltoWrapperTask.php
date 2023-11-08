@@ -130,7 +130,11 @@ class VebraAltoWrapperTask extends BaseJob
             $this->setProgress($queue, $propertyKey / count($propertyList));
             if ((string) $property->action === 'deleted') {
                 \craft\helpers\Queue::push(new DeleteTask([
-                    'propid' => (string)$property->propid
+                    'criteria' => [
+                        'sectionId' => $this->criteria['sectionId'],
+                        'branch' => $this->criteria['branch'],
+                    ],
+                    'propid' => (int)$property->propid
                 ]), 4);
             } else {
                 \craft\helpers\Queue::push(new PropertyTask([
