@@ -123,7 +123,7 @@ class VebraAltoWrapperTask extends BaseJob
         if (gettype($propertyList) !== 'array') $propertyList = [$propertyList];
         $this->vebraLog('Total properties in update: ' . print_r(count($propertyList), true));
         if (count($propertyList) < 1) return;
-        usort($propertyList, fn($a, $b) => (int)$a->prop_id < (int)$b->prop_id);
+        usort($propertyList, fn($a, $b) => (int)$a->propid < (int)$b->propid);
         
         $allProps = [];
         foreach ($propertyList as $propertyKey => $property) {
@@ -134,7 +134,7 @@ class VebraAltoWrapperTask extends BaseJob
                         'sectionId' => $this->criteria['sectionId'],
                         'branch' => $this->criteria['branch'],
                     ],
-                    'prop_id' => (int)$property->prop_id
+                    'propid' => (int)$property->propid
                 ]), 4);
             } else {
                 \craft\helpers\Queue::push(new PropertyTask([
@@ -144,7 +144,7 @@ class VebraAltoWrapperTask extends BaseJob
                     ],
                     'url' => (string)$property->url
                 ]), 4);
-                array_push($allProps, (int)$property->prop_id);
+                array_push($allProps, (int)$property->propid);
             }
         }
 
