@@ -87,6 +87,43 @@ class VebraAltoWrapperVariable
             'userfield1' => 'userfield1',
             'userfield2' => 'userfield2',
             'web_status' => 'web_status',
+            'features,accessibility_requirements,accessibility' => 'accessibility',
+            'features,broadband,supply' => 'broadband,supply',
+            'features,broadband,speed' => 'broadband,speed',
+            'features,building_safety,issue' => 'building_safety,issue',
+            'features,construction,material' => 'construction,material',
+            'features,coastal_erosion' => 'coastal_erosion',
+            'features,electricity,supply' => 'electricity,supply',
+            'features,flooding_risks,flooded_within_last_5_years' => 'flooding_risks,flooded_within_last_5_years',
+            'features,flooding_risks,flood_defenses_present' => 'flooding_risks,flood_defenses_present',
+            'features,flooding_risks,sources_of_flooding' => 'flooding_risks,sources_of_flooding',
+            'features,heating,source' => 'heating,source',
+            'features,known_planning_considerations' => 'known_planning_considerations',
+            'features,mining_risks,coalfields' => 'mining_risks,coalfields',
+            'features,mining_risks,other_mining_activities' => 'mining_risks,other_mining_activities',
+            'features,mobile_coverage' => 'mobile_coverage',
+            'features,parking,parking_type' => 'parking,parking_type',
+            'features,restrictions,conservation_area' => 'restrictions,conservation_area',
+            'features,restrictions,lease_restrictions' => 'restrictions,lease_restrictions',
+            'features,restrictions,listed_building' => 'restrictions,listed_building',
+            'features,restrictions,permitted_development' => 'restrictions,permitted_development',
+            'features,restrictions,real_burdens' => 'restrictions,real_burdens',
+            'features,restrictions,holiday_home_rental' => 'restrictions,holiday_home_rental',
+            'features,restrictions,restrictive_covenant' => 'restrictions,restrictive_covenant',
+            'features,restrictions,business_from_property' => 'restrictions,business_from_property',
+            'features,restrictions,property_subletting' => 'restrictions,property_subletting',
+            'features,restrictions,tree_preservation_order' => 'restrictions,tree_preservation_order',
+            'features,restrictions,other' => 'restrictions,other',
+            'features,rights_and_easements,right_of_way_public' => 'rights_and_easements,right_of_way_public',
+            'features,rights_and_easements,right_of_way_private' => 'rights_and_easements,right_of_way_private',
+            'features,rights_and_easements,registered_easements_hmlr' => 'rights_and_easements,registered_easements_hmlr',
+            'features,rights_and_easements,servitudes' => 'rights_and_easements,servitudes',
+            'features,rights_and_easements,shared_driveway' => 'rights_and_easements,shared_driveway',
+            'features,rights_and_easements,loft_access' => 'rights_and_easements,loft_access',
+            'features,rights_and_easements,drain_access' => 'rights_and_easements,drain_access',
+            'features,rights_and_easements,other' => 'rights_and_easements,other',
+            'features,sewerage,supply' => 'sewerage,supply',
+            'features,water,supply' => 'water,supply',
         );
     }
     public function getAllBranches()
@@ -94,7 +131,7 @@ class VebraAltoWrapperVariable
         $branches = VebraAltoWrapper::getInstance()->vebraAlto->getBranch();
         $options = [];
 
-        if (gettype($branches) !== 'NULL') {
+        if (in_array(gettype($branches), ['array', 'object'])) {
             foreach ($branches as $branch) {
                 if ((string) $branch->name == '') {
                     $options[(int) $branch->branchid . '-noname'] = $branch->branchid;

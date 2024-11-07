@@ -151,7 +151,7 @@ class VebraAltoWrapperService extends Component
     {
         //DataFeedID is set in the function __construct where it is retrieved from the
         //Settings section of this plugin within Craft CMS
-        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
+        $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v13/branch";
         //Start curl session
         $ch = curl_init($url);
         //Define Basic HTTP Authentication method
@@ -229,9 +229,9 @@ class VebraAltoWrapperService extends Component
             return false;
         }
         if (strlen($url) == 0) {
-            $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12/branch";
+            $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v13/branch";
         } elseif ($prepend) {
-            $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v12" . $url;
+            $url = "http://webservices.vebra.com/export/" . $this->dataFeedID . "/v13" . $url;
         }
 
         $ch = curl_init($url);
