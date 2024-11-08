@@ -112,7 +112,7 @@ class VebraAltoWrapperTask extends BaseJob
         }
 
         $file = Craft::$app->getPath()->getRuntimePath() . '/vebra-alto-wrapper/token.txt';
-        if (!file_exists($file) || $this->criteria['full']) {
+        if (!file_exists($file) || (!empty($this->criteria['full']) && (bool)$this->criteria['full'])) {
             $url = $branch->url . '/property';
             $propertyList = VebraAltoWrapper::getInstance()->vebraAlto->connect($url)['response']['property'];
         } else {
@@ -148,7 +148,7 @@ class VebraAltoWrapperTask extends BaseJob
             }
         }
 
-        if ($this->criteria['full'] && (int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) {
+        if ((!empty($this->criteria['full']) && (bool)$this->criteria['full']) && (int)VebraAltoWrapper::$plugin->getSettings()->shouldAutoDisable === 1) {
             \craft\helpers\Queue::push(new StatusTask([
                 'criteria' => [
                     'sectionId' => $this->criteria['sectionId'],

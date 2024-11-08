@@ -292,10 +292,16 @@ class VebraAltoWrapperService extends Component
         $keys = explode(',', $string);
         foreach ($keys as $key) {
             if (!isset($value)) {
-                $value = $array[$key];
+                if (array_key_exists($key, $array)) {
+                    $value = $array[$key];
+                } else {
+                    return null;
+                }
             } else {
                 if (isset($value[is_numeric($key) ? (int)$key : ($key)])) {
                     $value = $value[is_numeric($key) ? (int)$key : ($key)];
+                } else {
+                    return null;
                 }
             }
         }
