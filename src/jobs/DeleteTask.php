@@ -91,7 +91,7 @@ class DeleteTask extends BaseJob
         $this->vebraLog('Disabling deleted property ' . $this->propid);
         
         $entries = Entry::find()
-            ->sectionId($sectionId)
+            ->sectionId($this->criteria['sectionId'])
             ->reference(['or', (int)$this->propid, (string)$this->propid])
             ->status(null)
             ->all();

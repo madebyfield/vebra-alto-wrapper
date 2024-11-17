@@ -1,7 +1,7 @@
 {
   "pluginName": "Vebra Alto Wrapper",
   "pluginDescription": "Integration with the estate agency software altosoftware.co.uk",
-  "pluginVersion": "1.2",
+  "pluginVersion": "1.2.1",
   "pluginAuthorName": "Field",
   "pluginVendorName": "madebyfield/vebra-alto-wrapper",
   "pluginAuthorUrl": "https://madebyfield.co.uk",
