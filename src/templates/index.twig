@@ -50,7 +50,7 @@
 
 {# The content of the CP Section#}
 {% set content %}
-    <form method="get" action="{{ siteUrl }}actions/vebra-alto-wrapper/default/set-section" class="field">
+    <form method="get" action="{{ siteUrl }}admin/actions/vebra-alto-wrapper/default/set-section" class="field">
         <h2>Create new API link</h2>
         <div class="input flex-top">
 
@@ -93,13 +93,13 @@
         <div class="link-head">
             <h2>Section: {{ section.handle }}</h2>
             <h2>Branch: {{ link.branch }}</h2>
-            <form action="{{ siteUrl }}actions/vebra-alto-wrapper/default/delete-link">
+            <form action="{{ siteUrl }}admin/actions/vebra-alto-wrapper/default/delete-link">
                 <input type="hidden" name="sectionId" value="{{ link.sectionId }}">
                 <input type="submit" class="btn" value="Delete">
             </form>
         </div>
         <hr>
-        <form action="{{ siteUrl }}actions/vebra-alto-wrapper/default/set-map">
+        <form action="{{ siteUrl }}admin/actions/vebra-alto-wrapper/default/set-map">
         <input type="hidden" name="sectionId" value="{{ section.id }}">
         <table>
             <thead>
@@ -139,21 +139,21 @@
         </table>
         <input class="btn submit" type="submit" value="Save mapping">
         </form>
-        <form action="{{ siteUrl }}actions/vebra-alto-wrapper/default/update-branch">
+        <form action="{{ siteUrl }}admin/actions/vebra-alto-wrapper/default/update-branch">
         <input type="hidden" name="sectionId" value="{{ section.id }}">
         <input type="hidden" name="branch" value="{{ link.branch }}">
         <hr>
         <input type="submit" value="Update branch" class="btn submit">
         <div class="right">
             <label class="meta">URL to use for cron jobs<label>
-            <input type="text" value="{{ siteUrl }}actions/vebra-alto-wrapper/default/update-branch?{{ { 'sectionId' : section.id, 'branch' : link.branch } | url_encode }}">
+            <input type="text" value="{{ siteUrl }}admin/actions/vebra-alto-wrapper/default/update-branch?{{ { 'sectionId' : section.id, 'branch' : link.branch } | url_encode }}">
         </div>
         </form>
 
         
     </div>
     {% endfor %}
-    {# <a href="{{ siteUrl }}actions/vebra-alto-wrapper/default/update-all" class="submit btn" target="_blank">Update All</a> #}
+    {# <a href="{{ siteUrl }}admin/actions/vebra-alto-wrapper/default/update-all" class="submit btn" target="_blank">Update All</a> #}
 <style>
 .link-block {
     margin: 1em 0;
